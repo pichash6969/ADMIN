@@ -3,76 +3,101 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel - Scroll Control</title>
+<title>Admin Panel - Lottery Control</title>
 <style>
-  body { font-family: Arial,sans-serif; background:#111; color:#0f0; display:flex; flex-direction:column; align-items:center; padding:50px; }
-  h1 { color:#0f0; margin-bottom:20px; }
-  .control-btn { padding:10px 20px; margin:5px; background:#0f0;color:#000;border:none;border-radius:5px;cursor:pointer; }
-  .control-btn:hover{ background:#0c0; }
-  .slider-container { margin:20px 0; }
+  body { font-family: Arial,sans-serif; background:#111; color:#0f0; display:flex; flex-direction:column; align-items:center; padding:30px;}
+  h1 { margin-bottom:20px; }
+  .clock { font-size:24px; margin-bottom:20px; }
+  .input-group { margin:10px 0; display:flex; flex-direction:column; align-items:center; }
+  .input-group label { margin-bottom:5px; }
+  .input-group input { padding:8px; width:150px; border-radius:5px; border:none; text-align:center; }
+  .status-text { margin-top:20px; font-size:16px; }
 </style>
 </head>
 <body>
-<h1>Admin Panel - Scroll Control</h1>
-<button class="control-btn" id="playBtn">▶️ Play</button>
-<button class="control-btn" id="pauseBtn">⏸️ Pause</button>
-<button class="control-btn" id="resetBtn">🔄 Reset</button>
-<button class="control-btn" id="randomBtn">🎲 Random Stop</button>
 
-<div class="slider-container">
-  <label for="speedSlider">Scroll Speed:</label>
-  <input type="range" min="5" max="50" value="20" id="speedSlider">
+<h1>Admin Panel - Lottery Control</h1>
+
+<div class="clock" id="realTimeClock">00:00:00</div>
+
+<div class="input-group">
+  <label for="startTime">Start Time (HH:MM:SS)</label>
+  <input type="time" id="startTime" step="1">
 </div>
 
-<script>
-  // Admin panel controlling the index.html (same page JS)
-  let isPlaying = true;
-  let currentSpeed2Digit = 20;
-  let currentSpeed3Digit = 30;
+<div class="input-group">
+  <label for="stopTime">Stop Time (HH:MM:SS)</label>
+  <input type="time" id="stopTime" step="1">
+</div>
 
-  function playAnimation(){
+<div class="input-group">
+  <label for="fixed2D">Fixed 2D Number (00-99)</label>
+  <input type="number" id="fixed2D" min="0" max="99" placeholder="Ex: 25">
+</div>
+
+<div class="input-group">
+  <label for="fixed3D">Fixed 3D Number (000-999)</label>
+  <input type="number" id="fixed3D" min="0" max="999" placeholder="Ex: 123">
+</div>
+
+<div class="status-text" id="statusText">Status: Waiting...</div>
+
+<script>
+  // Real-time clock
+  function updateClock(){
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    document.getElementById('realTimeClock').textContent = `${h}:${m}:${s}`;
+
+    checkStartStop(h,m,s);
+  }
+  setInterval(updateClock,1000);
+
+  // Start/Stop logic
+  function checkStartStop(h,m,s){
+    const start = document.getElementById('startTime').value;
+    const stop = document.getElementById('stopTime').value;
+
+    const current = `${h}:${m}:${s}`;
+    const status = document.getElementById('statusText');
+
+    if(start && stop){
+      if(current === start){
+        // Start scrolling
+        startScrolling();
+        status.textContent = `Status: Started at ${start}`;
+      } else if(current === stop){
+        // Stop scrolling
+        stopScrolling();
+        status.textContent = `Status: Stopped at ${stop}`;
+        showFixedNumbers();
+      }
+    }
+  }
+
+  // Placeholder functions: connect to index.html scroll elements
+  function startScrolling(){
     document.getElementById('scroll-2digit').style.animationPlayState='running';
     document.getElementById('scroll-3digit').style.animationPlayState='running';
-    isPlaying=true;
-  }
-  function pauseAnimation(){
-    document.getElementById('scroll-2digit').style.animationPlayState='paused';
-    document.getElementById('scroll-3digit').style.animationPlayState='paused';
-    isPlaying=false;
-  }
-  function resetAnimation(){
-    const scroll2=document.getElementById('scroll-2digit');
-    const scroll3=document.getElementById('scroll-3digit');
-    scroll2.style.animation='none';
-    scroll3.style.animation='none';
-    scroll2.style.transform='translateY(0)';
-    scroll3.style.transform='translateY(0)';
-    setTimeout(()=>{
-      scroll2.style.animation=`scrollTwoDigit ${currentSpeed2Digit}s linear infinite`;
-      scroll3.style.animation=`scrollThreeDigit ${currentSpeed3Digit}s linear infinite`;
-      isPlaying ? playAnimation():pauseAnimation();
-    },50);
-  }
-  function randomStop(){
-    pauseAnimation();
-    const random2=Math.random()*-8000;
-    const random3=Math.random()*-80000;
-    document.getElementById('scroll-2digit').style.transform=`translateY(${random2}px)`;
-    document.getElementById('scroll-3digit').style.transform=`translateY(${random3}px)`;
-  }
-  function updateSpeed(){
-    const val=document.getElementById('speedSlider').value;
-    currentSpeed2Digit=parseInt(val);
-    currentSpeed3Digit=parseInt(val)*1.5;
-    document.getElementById('scroll-2digit').style.animationDuration=`${currentSpeed2Digit}s`;
-    document.getElementById('scroll-3digit').style.animationDuration=`${currentSpeed3Digit}s`;
   }
 
-  document.getElementById('playBtn').addEventListener('click',playAnimation);
-  document.getElementById('pauseBtn').addEventListener('click',pauseAnimation);
-  document.getElementById('resetBtn').addEventListener('click',resetAnimation);
-  document.getElementById('randomBtn').addEventListener('click',randomStop);
-  document.getElementById('speedSlider').addEventListener('input',updateSpeed);
+  function stopScrolling(){
+    document.getElementById('scroll-2digit').style.animationPlayState='paused';
+    document.getElementById('scroll-3digit').style.animationPlayState='paused';
+  }
+
+  function showFixedNumbers(){
+    const num2D = document.getElementById('fixed2D').value.padStart(2,'0');
+    const num3D = document.getElementById('fixed3D').value.padStart(3,'0');
+    
+    // Move scroll to fixed numbers
+    const scroll2 = document.getElementById('scroll-2digit');
+    const scroll3 = document.getElementById('scroll-3digit');
+    scroll2.style.transform = `translateY(-${num2D*80}px)`; // 80px height per number
+    scroll3.style.transform = `translateY(-${num3D*80}px)`;
+  }
 </script>
 </body>
 </html>
