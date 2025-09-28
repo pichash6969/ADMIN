@@ -3,81 +3,175 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Scrolling Numbers Display</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Courier New', monospace;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .main-container {
+      background: rgba(0,0,0,0.8);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      border: 2px solid #333;
+      width: 95%;
+      max-width: 500px;
+    }
+
+    .title {
+      text-align: center;
+      color: #00ff00;
+      font-size: 28px;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px #00ff00;
+      letter-spacing: 2px;
+    }
+
+    /* Clock Style */
+    .clock {
+      text-align: center;
+      color: #00ff00;
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #00ff00;
+      font-family: 'Courier New', monospace;
+    }
+
+    .numbers-display { display: flex; flex-direction: column; align-items:center; gap:30px; }
+
+    .number-section {
+      background:#000;
+      border:3px solid #333;
+      border-radius:15px;
+      padding:15px;
+      width:100%;
+      box-shadow: inset 0 0 20px rgba(0,255,0,0.1);
+    }
+
+    .section-title {
+      color:#00ff00;
+      text-align:center;
+      font-size:18px;
+      margin-bottom:12px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+    }
+
+    .scroll-container {
+      width:100%;
+      max-width:250px;
+      height:80px;
+      overflow:hidden;
+      border:2px solid #00ff00;
+      border-radius:10px;
+      margin:0 auto;
+      background:#000;
+    }
+
+    .scroll-numbers { display:flex; flex-direction:column; animation-timing-function:linear; animation-iteration-count:infinite; }
+    .two-digit { animation-name:scrollTwoDigit; animation-duration:20s; }
+    .three-digit { animation-name:scrollThreeDigit; animation-duration:30s; }
+
+    .number-item {
+      height:80px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:36px;
+      font-weight:bold;
+      color:#00ff00;
+      text-shadow:0 0 10px #00ff00;
+      border-bottom:1px solid #333;
+      background: linear-gradient(180deg, #001100 0%, #002200 50%, #001100 100%);
+    }
+
+    .number-item:nth-child(even) { background: linear-gradient(180deg, #000f00 0%, #001f00 50%, #000f00 100%); }
+
+    @keyframes scrollTwoDigit { from{transform:translateY(0);} to{transform:translateY(-8000px);} }
+    @keyframes scrollThreeDigit { from{transform:translateY(0);} to{transform:translateY(-80000px);} }
+
+    /* Responsive */
+    @media (max-width:768px){ .title{font-size:22px;} .scroll-container{height:60px;} .number-item{height:60px;font-size:26px;} }
+    @media (max-width:480px){ .main-container{padding:15px;} .title{font-size:18px;} .number-item{height:50px;font-size:20px;} }
+
+  </style>
 </head>
 <body>
   <div class="main-container">
-    <h1 class="title">Admin Panel</h1>
+    <h1 class="title">🎯 SCROLLING NUMBERS DISPLAY 🎯</h1>
 
-    <div class="number-section">
-      <label>Fixed 2D Number (00-99)</label>
-      <input type="number" id="fixed2" min="0" max="99">
+    <!-- Real-time Clock -->
+    <div id="clock" class="clock"></div>
+
+    <div class="numbers-display">
+      <div class="number-section glow">
+        <div class="section-title">00 - 99 Range</div>
+        <div class="scroll-container" id="container-2digit">
+          <div class="scroll-numbers two-digit" id="scroll-2digit"></div>
+        </div>
+      </div>
+
+      <div class="number-section glow">
+        <div class="section-title">000 - 999 Range</div>
+        <div class="scroll-container" id="container-3digit">
+          <div class="scroll-numbers three-digit" id="scroll-3digit"></div>
+        </div>
+      </div>
     </div>
-
-    <div class="number-section">
-      <label>Fixed 3D Number (000-999)</label>
-      <input type="number" id="fixed3" min="0" max="999">
-    </div>
-
-    <div class="number-section">
-      <label>Start Time</label>
-      <input type="time" id="startTime">
-    </div>
-
-    <div class="number-section">
-      <label>Stop Time</label>
-      <input type="time" id="stopTime">
-    </div>
-
-    <div class="number-section">
-      <label>Scroll Speed (ms)</label>
-      <input type="number" id="speedMs" min="100" max="5000" value="800">
-    </div>
-
-    <div class="number-section">
-      <label>Theme</label>
-      <select id="themeSel">
-        <option value="dark">Dark</option>
-        <option value="light">Light</option>
-      </select>
-    </div>
-
-    <div class="number-section">
-      <label>Result History Max</label>
-      <input type="number" id="historyMax" min="1" max="200" value="20">
-    </div>
-
-    <button class="control-btn" onclick="saveSettings()">Save Settings</button>
   </div>
 
   <script>
-    // Load previous settings
-    window.onload = () => {
-      const s = JSON.parse(localStorage.getItem('adminSettings')||'{}');
-      if(!s) return;
-      if(s.fixed2) document.getElementById('fixed2').value = s.fixed2;
-      if(s.fixed3) document.getElementById('fixed3').value = s.fixed3;
-      if(s.start) document.getElementById('startTime').value = s.start;
-      if(s.stop) document.getElementById('stopTime').value = s.stop;
-      if(s.speedMs) document.getElementById('speedMs').value = s.speedMs;
-      if(s.theme) document.getElementById('themeSel').value = s.theme;
-      if(s.historyMax) document.getElementById('historyMax').value = s.historyMax;
-    };
-
-    function saveSettings(){
-      const s = {
-        fixed2: document.getElementById('fixed2').value,
-        fixed3: document.getElementById('fixed3').value,
-        start: document.getElementById('startTime').value,
-        stop: document.getElementById('stopTime').value,
-        speedMs: parseInt(document.getElementById('speedMs').value),
-        theme: document.getElementById('themeSel').value,
-        historyMax: parseInt(document.getElementById('historyMax').value)
-      };
-      localStorage.setItem('adminSettings', JSON.stringify(s));
-      alert('✅ Settings saved!');
+    // Real-time clock
+    function updateClock(){
+      const clockEl = document.getElementById('clock');
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2,'0');
+      const m = String(now.getMinutes()).padStart(2,'0');
+      const s = String(now.getSeconds()).padStart(2,'0');
+      clockEl.textContent = `${h}:${m}:${s}`;
     }
+    setInterval(updateClock,1000);
+    updateClock();
+
+    // Generate numbers
+    function generateTwoDigitNumbers(){
+      const container = document.getElementById('scroll-2digit');
+      container.innerHTML = '';
+      for(let cycle=0;cycle<10;cycle++){
+        for(let i=0;i<=99;i++){
+          const div=document.createElement('div');
+          div.className='number-item';
+          div.textContent=i.toString().padStart(2,'0');
+          container.appendChild(div);
+        }
+      }
+    }
+    function generateThreeDigitNumbers(){
+      const container = document.getElementById('scroll-3digit');
+      container.innerHTML='';
+      for(let cycle=0;cycle<10;cycle++){
+        for(let i=0;i<=999;i++){
+          const div=document.createElement('div');
+          div.className='number-item';
+          div.textContent=i.toString().padStart(3,'0');
+          container.appendChild(div);
+        }
+      }
+    }
+
+    window.addEventListener('load',()=>{
+      generateTwoDigitNumbers();
+      generateThreeDigitNumbers();
+    });
   </script>
 </body>
 </html>
