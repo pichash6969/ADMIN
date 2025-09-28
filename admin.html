@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🔑 Admin Panel (Private)</h1>
+
+  <div id="loginBox">
+    <input type="password" id="password" placeholder="Enter Password">
+    <button onclick="login()">Login</button>
+  </div>
+
+  <div id="adminContent" style="display:none;">
+    <h2>Welcome Admin 🚀</h2>
+    <label>Set Fixed Number (00-99): <input type="number" id="fixedNumber2" min="0" max="99"></label><br>
+    <label>Set Fixed Number (000-999): <input type="number" id="fixedNumber3" min="0" max="999"></label><br>
+    <button onclick="saveNumber()">Save</button>
+
+    <p id="result"></p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
