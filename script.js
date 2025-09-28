@@ -1,72 +1,50 @@
-// Scroll Numbers Generation
-function generateNumbers(containerId, maxNum, digits) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
-  for (let cycle = 0; cycle < 10; cycle++) {
-    for (let i = 0; i <= maxNum; i++) {
-      const div = document.createElement('div');
-      div.className = 'number-item';
-      div.textContent = i.toString().padStart(digits, '0');
-      container.appendChild(div);
+// Get settings from admin
+let fixed2D = localStorage.getItem('fixed2D') || '00';
+let fixed3D = localStorage.getItem('fixed3D') || '000';
+let startTime = localStorage.getItem('startTime') || '00:00:00';
+let stopTime = localStorage.getItem('stopTime') || '23:59:59';
+let scrollSpeed = parseInt(localStorage.getItem('scrollSpeed')) || 20;
+
+const scroll2D = document.getElementById('scroll2D');
+const scroll3D = document.getElementById('scroll3D');
+
+// Real-time clock
+function updateClock(){
+    const now = new Date();
+    const h=String(now.getHours()).padStart(2,'0');
+    const m=String(now.getMinutes()).padStart(2,'0');
+    const s=String(now.getSeconds()).padStart(2,'0');
+    document.getElementById('clock').textContent=`${h}:${m}:${s}`;
+
+    const currentTime = `${h}:${m}:${s}`;
+    // Auto start / stop based on time
+    if(currentTime>=startTime && currentTime<=stopTime){
+        startScroll();
+    }else{
+        pauseScroll();
     }
-  }
 }
+setInterval(updateClock,1000);
 
-let isPlaying = false;
-let currentSpeed2Digit = 20;
-let currentSpeed3Digit = 30;
-let fixed2D = 0;
-let fixed3D = 0;
-let startTime = null;
-let stopTime = null;
+// Generate numbers
+function generate2D(){ scroll2D.innerHTML = `<div class="number-item">${fixed2D}</div>`.repeat(50); }
+function generate3D(){ scroll3D.innerHTML = `<div class="number-item">${fixed3D}</div>`.repeat(50); }
 
-// Real-Time Clock
-function updateClock() {
-  const now = new Date();
-  const clock = document.getElementById('realClock');
-  const timeStr = now.toTimeString().split(' ')[0];
-  clock.textContent = timeStr;
-
-  // Auto Start/Stop Scroll
-  if (startTime && stopTime) {
-    if (timeStr === startTime) startScroll();
-    if (timeStr === stopTime) stopScroll();
-  }
-  requestAnimationFrame(updateClock);
+// Scroll animations
+let scrollInterval;
+function startScroll(){
+    clearInterval(scrollInterval);
+    let pos2=0,pos3=0;
+    scrollInterval=setInterval(()=>{
+        pos2 = (pos2+1)%scroll2D.scrollHeight;
+        pos3 = (pos3+1)%scroll3D.scrollHeight;
+        scroll2D.scrollTop=pos2;
+        scroll3D.scrollTop=pos3;
+    }, 100/scrollSpeed);
 }
-
-// Scroll Controls
-function startScroll() {
-  document.getElementById('scroll-2digit').style.animation = `scrollTwoDigit ${currentSpeed2Digit}s linear infinite`;
-  document.getElementById('scroll-3digit').style.animation = `scrollThreeDigit ${currentSpeed3Digit}s linear infinite`;
-  isPlaying = true;
-}
-
-function stopScroll() {
-  const scroll2 = document.getElementById('scroll-2digit');
-  const scroll3 = document.getElementById('scroll-3digit');
-
-  scroll2.style.animation = 'none';
-  scroll3.style.animation = 'none';
-
-  scroll2.style.transform = `translateY(-${fixed2D*80}px)`;
-  scroll3.style.transform = `translateY(-${fixed3D*80}px)`;
-
-  isPlaying = false;
-}
+function pauseScroll(){ clearInterval(scrollInterval); }
 
 // Initialize
-window.addEventListener('load', () => {
-  generateNumbers('scroll-2digit', 99, 2);
-  generateNumbers('scroll-3digit', 999, 3);
-  updateClock();
-});
-
-// Dynamic Animation Keyframes
-const styleSheet = document.createElement("style");
-styleSheet.type = "text/css";
-styleSheet.innerText = `
-@keyframes scrollTwoDigit { from { transform: translateY(0);} to { transform: translateY(-8000px); } }
-@keyframes scrollThreeDigit { from { transform: translateY(0);} to { transform: translateY(-80000px); } }
-`;
-document.head.appendChild(styleSheet);
+generate2D();
+generate3D();
+startScroll();
