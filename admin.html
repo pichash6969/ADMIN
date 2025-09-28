@@ -7,33 +7,25 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="admin-container">
-  <h1>Admin Panel</h1>
+<div class="main-container">
+<h1>Admin Panel</h1>
 
-  <div class="input-group">
-    <label>Fixed 2D Number (00-99)</label>
-    <input type="number" min="0" max="99" id="fixed2D">
-  </div>
+<label>Fixed 2D Number (00-99)</label>
+<input type="text" id="fixed2DInput" maxlength="2" placeholder="00">
 
-  <div class="input-group">
-    <label>Fixed 3D Number (000-999)</label>
-    <input type="number" min="0" max="999" id="fixed3D">
-  </div>
+<label>Fixed 3D Number (000-999)</label>
+<input type="text" id="fixed3DInput" maxlength="3" placeholder="000">
 
-  <div class="input-group">
-    <label>Start Time (HH:MM:SS)</label>
-    <input type="time" id="startTime" step="1">
-  </div>
+<label>Start Time (HH:MM:SS)</label>
+<input type="time" id="startTimeInput">
 
-  <div class="input-group">
-    <label>Stop Time (HH:MM:SS)</label>
-    <input type="time" id="stopTime" step="1">
-  </div>
+<label>Stop Time (HH:MM:SS)</label>
+<input type="time" id="stopTimeInput">
 
-  <div class="slider-container">
-    <label>Scroll Speed</label>
-    <input type="range" min="5" max="50" value="20" id="speedSlider">
-  </div>
+<label>Scroll Speed</label>
+<input type="range" min="5" max="50" value="20" id="speedSlider">
+
+<button class="control-btn" id="applyBtn">✅ Apply Settings</button>
 </div>
 
 <script src="admin.js"></script>
