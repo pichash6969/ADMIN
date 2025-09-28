@@ -1,23 +1,13 @@
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background: #222;
-  color: #fff;
+:root {
+  --bg: linear-gradient(135deg,#1e3c72,#2a5298);
+  --accent:#00ff00;
+  --text:#fff;
 }
-h1 { margin-top: 20px; }
-.box {
-  margin: 20px auto;
-  padding: 20px;
-  width: 200px;
-  border: 2px solid #0f0;
-  border-radius: 10px;
+[data-theme="light"]{
+  --bg: linear-gradient(135deg,#fff,#e6f0ff);
+  --accent:#007bff;
+  --text:#111;
 }
-#display2D, #display3D {
-  font-size: 2rem;
-  margin-top: 10px;
-  color: #0f0;
-}
-#status {
-  margin-top: 20px;
-  font-weight: bold;
-}
+body{ background: var(--bg); color: var(--text);}
+.number-item{ color: var(--accent);}
+.scroll-container{ border-color: var(--accent);}
