@@ -1,43 +1,35 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="admin-container">
-    <h1>Admin Panel - Lottery Settings</h1>
+  <div class="admin-container">
+    <h1>Admin Panel</h1>
 
-    <div class="control-group">
-        <label>Fixed 2D Number (00-99):</label>
-        <input type="number" id="fixed2D" min="0" max="99">
+    <div class="admin-settings">
+      <label>Fixed 2D Number (00-99):</label>
+      <input type="number" id="fixed2D" min="0" max="99" placeholder="Leave blank for random">
+
+      <label>Fixed 3D Number (000-999):</label>
+      <input type="number" id="fixed3D" min="0" max="999" placeholder="Leave blank for random">
+
+      <label>Start Time (HH:MM:SS):</label>
+      <input type="time" id="startTime">
+
+      <label>Stop Time (HH:MM:SS):</label>
+      <input type="time" id="stopTime">
+
+      <label>Scroll Speed:</label>
+      <input type="range" id="scrollSpeed" min="5" max="50" value="20">
     </div>
 
-    <div class="control-group">
-        <label>Fixed 3D Number (000-999):</label>
-        <input type="number" id="fixed3D" min="0" max="999">
-    </div>
+    <button id="applySettings">Apply Settings</button>
+  </div>
 
-    <div class="control-group">
-        <label>Start Time (HH:MM:SS):</label>
-        <input type="time" id="startTime" step="1">
-    </div>
-
-    <div class="control-group">
-        <label>Stop Time (HH:MM:SS):</label>
-        <input type="time" id="stopTime" step="1">
-    </div>
-
-    <div class="control-group">
-        <label>Scroll Speed:</label>
-        <input type="range" id="speedSlider" min="5" max="50" value="20">
-    </div>
-
-    <button class="control-btn" id="applyBtn">💾 Apply Settings</button>
-</div>
-
-<script src="admin.js"></script>
+  <script src="admin.js"></script>
 </body>
 </html>
