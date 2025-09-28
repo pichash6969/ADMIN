@@ -1,16 +1,15 @@
-const fixed2DInput = document.getElementById('fixed2D');
-const fixed3DInput = document.getElementById('fixed3D');
-const startTimeInput = document.getElementById('startTime');
-const stopTimeInput = document.getElementById('stopTime');
-const speedSlider = document.getElementById('speedSlider');
+document.getElementById('applyBtn').addEventListener('click', function(){
+    const fixed2D = document.getElementById('fixed2DInput').value || '00';
+    const fixed3D = document.getElementById('fixed3DInput').value || '000';
+    const startTime = document.getElementById('startTimeInput').value || '00:00:00';
+    const stopTime = document.getElementById('stopTimeInput').value || '23:59:59';
+    const speed = document.getElementById('speedSlider').value || 20;
 
-// Listen to changes
-fixed2DInput.addEventListener('input', e => window.fixed2D = parseInt(e.target.value));
-fixed3DInput.addEventListener('input', e => window.fixed3D = parseInt(e.target.value));
-startTimeInput.addEventListener('input', e => window.startTime = e.target.value);
-stopTimeInput.addEventListener('input', e => window.stopTime = e.target.value);
-speedSlider.addEventListener('input', e => {
-  window.currentSpeed2Digit = parseInt(e.target.value);
-  window.currentSpeed3Digit = parseInt(e.target.value) * 1.5;
-  if(window.isPlaying) window.startScroll();
+    localStorage.setItem('fixed2D', fixed2D);
+    localStorage.setItem('fixed3D', fixed3D);
+    localStorage.setItem('startTime', startTime);
+    localStorage.setItem('stopTime', stopTime);
+    localStorage.setItem('scrollSpeed', speed);
+
+    alert('Settings Applied!');
 });
