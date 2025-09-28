@@ -8,29 +8,18 @@
 </head>
 <body>
 <div class="main-container">
-  <h1 class="title">🎯 SCROLLING NUMBERS DISPLAY 🎯</h1>
-  
-  <div class="numbers-display">
-    <div class="number-section glow">
-      <div class="section-title">00 - 99 Range</div>
-      <div class="scroll-container" id="container-2digit">
-        <div class="scroll-numbers two-digit" id="scroll-2digit"></div>
-      </div>
-    </div>
+<h1>🎯 SCROLLING NUMBERS DISPLAY 🎯</h1>
+<div id="clock" style="text-align:center; margin-bottom:10px;">00:00:00</div>
 
-    <div class="number-section glow">
-      <div class="section-title">000 - 999 Range</div>
-      <div class="scroll-container" id="container-3digit">
-        <div class="scroll-numbers three-digit" id="scroll-3digit"></div>
-      </div>
-    </div>
-  </div>
+<div class="number-section">
+<div>2D Numbers (00-99)</div>
+<div class="scroll-container" id="scroll2D"></div>
+</div>
 
-  <div class="status">
-    <span class="status-light"></span>
-    <span class="status-text" id="statusText">Running...</span>
-    <span class="clock" id="realClock"></span>
-  </div>
+<div class="number-section">
+<div>3D Numbers (000-999)</div>
+<div class="scroll-container" id="scroll3D"></div>
+</div>
 </div>
 
 <script src="script.js"></script>
