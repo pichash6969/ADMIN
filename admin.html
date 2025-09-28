@@ -1,27 +1,83 @@
-<!-- admin.html (only the form + save logic) -->
-<input id="fixed2" type="number" min="0" max="99" placeholder="77">
-<input id="fixed3" type="number" min="0" max="999" placeholder="123">
-<input id="startTime" type="time">
-<input id="stopTime" type="time">
-<input id="speedMs" type="number" min="100" max="5000" value="800"> <!-- milliseconds -->
-<select id="themeSel"><option value="light">Light</option><option value="dark">Dark</option></select>
-<input id="historyMax" type="number" min="1" max="200" value="20">
-<button onclick="saveSettings()">Save</button>
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="main-container">
+    <h1 class="title">Admin Panel</h1>
 
-<script>
-function saveSettings(){
-  const s = {
-    fixed2: document.getElementById('fixed2').value.toString().padStart(2,'0') || "",
-    fixed3: document.getElementById('fixed3').value.toString().padStart(3,'0') || "",
-    start: document.getElementById('startTime').value || "",
-    stop: document.getElementById('stopTime').value || "",
-    speedMs: parseInt(document.getElementById('speedMs').value,10) || 800,
-    theme: document.getElementById('themeSel').value || 'light',
-    historyMax: parseInt(document.getElementById('historyMax').value,10) || 20,
-    drawTime: parseInt(document.getElementById('drawTime')?.value,10) || 2000 // optional
-  };
-  localStorage.setItem('adminSettings', JSON.stringify(s));
-  alert('✅ Settings saved');
-}
-window.onload = ()=>{ const s=JSON.parse(localStorage.getItem('adminSettings')||'{}'); if(!s) return; if(s.fixed2) document.getElementById('fixed2').value=s.fixed2; if(s.fixed3) document.getElementById('fixed3').value=s.fixed3; if(s.start) document.getElementById('startTime').value=s.start; if(s.stop) document.getElementById('stopTime').value=s.stop; if(s.speedMs) document.getElementById('speedMs').value=s.speedMs; if(s.theme) document.getElementById('themeSel').value=s.theme; if(s.historyMax) document.getElementById('historyMax').value=s.historyMax; };
-</script>
+    <div class="number-section">
+      <label>Fixed 2D Number (00-99)</label>
+      <input type="number" id="fixed2" min="0" max="99">
+    </div>
+
+    <div class="number-section">
+      <label>Fixed 3D Number (000-999)</label>
+      <input type="number" id="fixed3" min="0" max="999">
+    </div>
+
+    <div class="number-section">
+      <label>Start Time</label>
+      <input type="time" id="startTime">
+    </div>
+
+    <div class="number-section">
+      <label>Stop Time</label>
+      <input type="time" id="stopTime">
+    </div>
+
+    <div class="number-section">
+      <label>Scroll Speed (ms)</label>
+      <input type="number" id="speedMs" min="100" max="5000" value="800">
+    </div>
+
+    <div class="number-section">
+      <label>Theme</label>
+      <select id="themeSel">
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+      </select>
+    </div>
+
+    <div class="number-section">
+      <label>Result History Max</label>
+      <input type="number" id="historyMax" min="1" max="200" value="20">
+    </div>
+
+    <button class="control-btn" onclick="saveSettings()">Save Settings</button>
+  </div>
+
+  <script>
+    // Load previous settings
+    window.onload = () => {
+      const s = JSON.parse(localStorage.getItem('adminSettings')||'{}');
+      if(!s) return;
+      if(s.fixed2) document.getElementById('fixed2').value = s.fixed2;
+      if(s.fixed3) document.getElementById('fixed3').value = s.fixed3;
+      if(s.start) document.getElementById('startTime').value = s.start;
+      if(s.stop) document.getElementById('stopTime').value = s.stop;
+      if(s.speedMs) document.getElementById('speedMs').value = s.speedMs;
+      if(s.theme) document.getElementById('themeSel').value = s.theme;
+      if(s.historyMax) document.getElementById('historyMax').value = s.historyMax;
+    };
+
+    function saveSettings(){
+      const s = {
+        fixed2: document.getElementById('fixed2').value,
+        fixed3: document.getElementById('fixed3').value,
+        start: document.getElementById('startTime').value,
+        stop: document.getElementById('stopTime').value,
+        speedMs: parseInt(document.getElementById('speedMs').value),
+        theme: document.getElementById('themeSel').value,
+        historyMax: parseInt(document.getElementById('historyMax').value)
+      };
+      localStorage.setItem('adminSettings', JSON.stringify(s));
+      alert('✅ Settings saved!');
+    }
+  </script>
+</body>
+</html>
