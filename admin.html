@@ -3,31 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel</title>
+<title>Lottery Scroll Display</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="main-container">
-<h1>Admin Panel</h1>
+    <!-- Clock placed above the title -->
+    <div id="clock" class="clock"></div>
 
-<label>Fixed 2D Number (00-99)</label>
-<input type="text" id="fixed2DInput" maxlength="2" placeholder="00">
+    <h1>🎰 Lottery Scroll Display 🎰</h1>
 
-<label>Fixed 3D Number (000-999)</label>
-<input type="text" id="fixed3DInput" maxlength="3" placeholder="000">
+    <!-- Numbers Display -->
+    <div class="numbers-display">
+        <!-- 2D Numbers -->
+        <div class="number-section glow">
+            <div class="section-title">2D Numbers (00-99)</div>
+            <div class="scroll-container" id="scroll-2digit"></div>
+        </div>
 
-<label>Start Time (HH:MM:SS)</label>
-<input type="time" id="startTimeInput">
-
-<label>Stop Time (HH:MM:SS)</label>
-<input type="time" id="stopTimeInput">
-
-<label>Scroll Speed</label>
-<input type="range" min="5" max="50" value="20" id="speedSlider">
-
-<button class="control-btn" id="applyBtn">✅ Apply Settings</button>
+        <!-- 3D Numbers -->
+        <div class="number-section glow">
+            <div class="section-title">3D Numbers (000-999)</div>
+            <div class="scroll-container" id="scroll-3digit"></div>
+        </div>
+    </div>
 </div>
 
-<script src="admin.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
