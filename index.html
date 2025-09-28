@@ -3,32 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lottery Scroll Display</title>
+<title>🎰 Lottery Scroll Display 🎰</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="main-container">
     <h1>🎰 Lottery Scroll Display 🎰</h1>
-
-    <!-- Clock -->
     <div id="clock"></div>
 
-    <!-- Numbers Display -->
     <div class="numbers-display">
-        <!-- 2D Numbers -->
-        <div class="number-section glow">
-            <div class="section-title">2D Numbers (00-99)</div>
-            <div class="scroll-container" id="scroll-2digit"></div>
+        <div class="number-section">
+            <div>2D Number</div>
+            <div id="scroll-2digit" class="number-item">00</div>
         </div>
-
-        <!-- 3D Numbers -->
-        <div class="number-section glow">
-            <div class="section-title">3D Numbers (000-999)</div>
-            <div class="scroll-container" id="scroll-3digit"></div>
+        <div class="number-section">
+            <div>3D Number</div>
+            <div id="scroll-3digit" class="number-item">000</div>
         </div>
     </div>
 </div>
-
 <script src="script.js"></script>
 </body>
 </html>
