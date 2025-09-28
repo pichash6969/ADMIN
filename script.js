@@ -1,53 +1,72 @@
-function getAdminSettings(){
-  return JSON.parse(localStorage.getItem('adminSettings') || '{}');
+// Scroll Numbers Generation
+function generateNumbers(containerId, maxNum, digits) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  for (let cycle = 0; cycle < 10; cycle++) {
+    for (let i = 0; i <= maxNum; i++) {
+      const div = document.createElement('div');
+      div.className = 'number-item';
+      div.textContent = i.toString().padStart(digits, '0');
+      container.appendChild(div);
+    }
+  }
 }
 
-function applyTheme(){
-  const s = getAdminSettings();
-  document.documentElement.setAttribute('data-theme', s.theme || 'dark');
-}
+let isPlaying = false;
+let currentSpeed2Digit = 20;
+let currentSpeed3Digit = 30;
+let fixed2D = 0;
+let fixed3D = 0;
+let startTime = null;
+let stopTime = null;
 
-function startAutoScroll(){
-  const s = getAdminSettings();
-  const speed2 = (s.speedMs || 800)/1000;
-  const speed3 = (s.speedMs || 800)*1.5/1000;
-  document.getElementById('scroll-2digit').style.animationDuration = speed2+'s';
-  document.getElementById('scroll-3digit').style.animationDuration = speed3+'s';
-  document.getElementById('scroll-2digit').style.animationPlayState='running';
-  document.getElementById('scroll-3digit').style.animationPlayState='running';
-}
-
-function stopAutoScroll(){
-  document.getElementById('scroll-2digit').style.animationPlayState='paused';
-  document.getElementById('scroll-3digit').style.animationPlayState='paused';
-}
-
-// Manual draw (use fixed numbers)
-function runManualDraw(){
-  stopAutoScroll();
-  const s = getAdminSettings();
-  const f2 = s.fixed2 || Math.floor(Math.random()*100).toString().padStart(2,'0');
-  const f3 = s.fixed3 || Math.floor(Math.random()*1000).toString().padStart(3,'0');
-  document.getElementById('scroll-2digit').textContent = f2;
-  document.getElementById('scroll-3digit').textContent = f3;
-  // Save history
-  let hist = JSON.parse(localStorage.getItem('resultHistory')||'[]');
-  hist.unshift({time:new Date().toLocaleString(), '2D':f2, '3D':f3});
-  const max = s.historyMax || 20;
-  hist = hist.slice(0,max);
-  localStorage.setItem('resultHistory', JSON.stringify(hist));
-}
+// Real-Time Clock
 function updateClock() {
-    const clockEl = document.getElementById('clock');
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2,'0');
-    const minutes = String(now.getMinutes()).padStart(2,'0');
-    const seconds = String(now.getSeconds()).padStart(2,'0');
-    clockEl.textContent = `${hours}:${minutes}:${seconds}`;
+  const now = new Date();
+  const clock = document.getElementById('realClock');
+  const timeStr = now.toTimeString().split(' ')[0];
+  clock.textContent = timeStr;
+
+  // Auto Start/Stop Scroll
+  if (startTime && stopTime) {
+    if (timeStr === startTime) startScroll();
+    if (timeStr === stopTime) stopScroll();
+  }
+  requestAnimationFrame(updateClock);
 }
 
-// Update every second
-setInterval(updateClock, 1000);
+// Scroll Controls
+function startScroll() {
+  document.getElementById('scroll-2digit').style.animation = `scrollTwoDigit ${currentSpeed2Digit}s linear infinite`;
+  document.getElementById('scroll-3digit').style.animation = `scrollThreeDigit ${currentSpeed3Digit}s linear infinite`;
+  isPlaying = true;
+}
 
-// Initialize immediately
-updateClock();
+function stopScroll() {
+  const scroll2 = document.getElementById('scroll-2digit');
+  const scroll3 = document.getElementById('scroll-3digit');
+
+  scroll2.style.animation = 'none';
+  scroll3.style.animation = 'none';
+
+  scroll2.style.transform = `translateY(-${fixed2D*80}px)`;
+  scroll3.style.transform = `translateY(-${fixed3D*80}px)`;
+
+  isPlaying = false;
+}
+
+// Initialize
+window.addEventListener('load', () => {
+  generateNumbers('scroll-2digit', 99, 2);
+  generateNumbers('scroll-3digit', 999, 3);
+  updateClock();
+});
+
+// Dynamic Animation Keyframes
+const styleSheet = document.createElement("style");
+styleSheet.type = "text/css";
+styleSheet.innerText = `
+@keyframes scrollTwoDigit { from { transform: translateY(0);} to { transform: translateY(-8000px); } }
+@keyframes scrollThreeDigit { from { transform: translateY(0);} to { transform: translateY(-80000px); } }
+`;
+document.head.appendChild(styleSheet);
