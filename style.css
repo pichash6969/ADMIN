@@ -11,3 +11,13 @@
 body{ background: var(--bg); color: var(--text);}
 .number-item{ color: var(--accent);}
 .scroll-container{ border-color: var(--accent);}
+}
+.clock {
+    text-align: center;
+    color: #00ff00;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #00ff00;
+    font-family: 'Courier New', monospace;
+}
+
