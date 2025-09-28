@@ -1,62 +1,42 @@
-// ======= Real-Time Clock =======
+let fixed2D = null, fixed3D = null;
+let startTime = null, stopTime = null;
+let scrollSpeed = 500; // ms interval
+
+// Real-time Clock
 function updateClock() {
-    const clock = document.getElementById('clock');
     const now = new Date();
-    const hours = now.getHours().toString().padStart(2,'0');
-    const minutes = now.getMinutes().toString().padStart(2,'0');
-    const seconds = now.getSeconds().toString().padStart(2,'0');
-    clock.textContent = `${hours}:${minutes}:${seconds}`;
+    document.getElementById('clock').textContent = now.toLocaleTimeString();
 }
 setInterval(updateClock, 1000);
-updateClock(); // initialize immediately
 
-// ======= Generate 2D Numbers (00-99) =======
-function generateTwoDigitNumbers() {
-    const container = document.getElementById('scroll-2digit');
-    container.innerHTML = '';
-    for (let cycle=0; cycle<10; cycle++){
-        for (let i=0; i<=99; i++){
-            const div = document.createElement('div');
-            div.className = 'number-item';
-            div.textContent = i.toString().padStart(2,'0');
-            container.appendChild(div);
-        }
+// Random Numbers
+function getRandom2D(){ return Math.floor(Math.random()*100).toString().padStart(2,'0'); }
+function getRandom3D(){ return Math.floor(Math.random()*1000).toString().padStart(3,'0'); }
+
+// Scroll Numbers based on Admin Settings
+function updateNumbers(){
+    const now = new Date();
+    let run = true;
+
+    if(startTime && stopTime){
+        const today = now.toISOString().split('T')[0];
+        const start = new Date(today+'T'+startTime);
+        const stop = new Date(today+'T'+stopTime);
+        run = now >= start && now <= stop;
+    }
+
+    if(run){
+        document.getElementById('scroll-2digit').textContent = fixed2D || getRandom2D();
+        document.getElementById('scroll-3digit').textContent = fixed3D || getRandom3D();
     }
 }
+setInterval(updateNumbers, scrollSpeed);
 
-// ======= Generate 3D Numbers (000-999) =======
-function generateThreeDigitNumbers() {
-    const container = document.getElementById('scroll-3digit');
-    container.innerHTML = '';
-    for (let cycle=0; cycle<10; cycle++){
-        for (let i=0; i<=999; i++){
-            const div = document.createElement('div');
-            div.className = 'number-item';
-            div.textContent = i.toString().padStart(3,'0');
-            container.appendChild(div);
-        }
-    }
-}
-
-// ======= Animation Controls =======
-let isPlaying = true;
-let speed2D = 20;
-let speed3D = 30;
-
-function playAnimation(){
-    document.getElementById('scroll-2digit').style.animationPlayState='running';
-    document.getElementById('scroll-3digit').style.animationPlayState='running';
-    isPlaying=true;
-}
-function pauseAnimation(){
-    document.getElementById('scroll-2digit').style.animationPlayState='paused';
-    document.getElementById('scroll-3digit').style.animationPlayState='paused';
-    isPlaying=false;
-}
-
-// ======= Initialize =======
-window.addEventListener('load', () => {
-    generateTwoDigitNumbers();
-    generateThreeDigitNumbers();
-    setTimeout(() => playAnimation(), 500);
+// Listen for settings from admin.js
+window.addEventListener('message', (e)=>{
+    if(e.data.fixed2D !== undefined) fixed2D = e.data.fixed2D;
+    if(e.data.fixed3D !== undefined) fixed3D = e.data.fixed3D;
+    if(e.data.startTime) startTime = e.data.startTime;
+    if(e.data.stopTime) stopTime = e.data.stopTime;
+    if(e.data.scrollSpeed) scrollSpeed = e.data.scrollSpeed;
 });
