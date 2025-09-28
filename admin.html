@@ -1,58 +1,27 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-  <meta charset="UTF-8">
-  <title>Admin Panel</title>
-  <style>
-    body { font-family: Arial; background: #111; color: #0f0; padding: 20px; }
-    h1 { text-align: center; }
-    label { display: block; margin-top: 10px; }
-    input, button { margin-top: 5px; padding: 8px; border-radius: 5px; }
-    button { cursor: pointer; background: #0f0; color: #000; border: none; }
-  </style>
-</head>
-<body>
-  <h1>🎛 Admin Panel</h1>
+<!-- admin.html (only the form + save logic) -->
+<input id="fixed2" type="number" min="0" max="99" placeholder="77">
+<input id="fixed3" type="number" min="0" max="999" placeholder="123">
+<input id="startTime" type="time">
+<input id="stopTime" type="time">
+<input id="speedMs" type="number" min="100" max="5000" value="800"> <!-- milliseconds -->
+<select id="themeSel"><option value="light">Light</option><option value="dark">Dark</option></select>
+<input id="historyMax" type="number" min="1" max="200" value="20">
+<button onclick="saveSettings()">Save</button>
 
-  <label>Fixed 2D Number</label>
-  <input type="number" id="fixed2D" min="0" max="99">
-
-  <label>Fixed 3D Number</label>
-  <input type="number" id="fixed3D" min="0" max="999">
-
-  <label>Start Time</label>
-  <input type="time" id="startTime">
-
-  <label>Stop Time</label>
-  <input type="time" id="stopTime">
-
-  <label>Scroll Speed (ms)</label>
-  <input type="number" id="speed" min="200" max="3000">
-
-  <button onclick="saveSettings()">💾 Save Settings</button>
-
-  <script>
-    function saveSettings() {
-      const settings = {
-        fixed2D: document.getElementById('fixed2D').value,
-        fixed3D: document.getElementById('fixed3D').value,
-        startTime: document.getElementById('startTime').value,
-        stopTime: document.getElementById('stopTime').value,
-        speed: document.getElementById('speed').value
-      };
-      localStorage.setItem('adminSettings', JSON.stringify(settings));
-      alert("✅ Settings Saved!");
-    }
-
-    // Load saved values
-    window.onload = () => {
-      const saved = JSON.parse(localStorage.getItem('adminSettings')) || {};
-      if (saved.fixed2D) document.getElementById('fixed2D').value = saved.fixed2D;
-      if (saved.fixed3D) document.getElementById('fixed3D').value = saved.fixed3D;
-      if (saved.startTime) document.getElementById('startTime').value = saved.startTime;
-      if (saved.stopTime) document.getElementById('stopTime').value = saved.stopTime;
-      if (saved.speed) document.getElementById('speed').value = saved.speed;
-    };
-  </script>
-</body>
-</html>
+<script>
+function saveSettings(){
+  const s = {
+    fixed2: document.getElementById('fixed2').value.toString().padStart(2,'0') || "",
+    fixed3: document.getElementById('fixed3').value.toString().padStart(3,'0') || "",
+    start: document.getElementById('startTime').value || "",
+    stop: document.getElementById('stopTime').value || "",
+    speedMs: parseInt(document.getElementById('speedMs').value,10) || 800,
+    theme: document.getElementById('themeSel').value || 'light',
+    historyMax: parseInt(document.getElementById('historyMax').value,10) || 20,
+    drawTime: parseInt(document.getElementById('drawTime')?.value,10) || 2000 // optional
+  };
+  localStorage.setItem('adminSettings', JSON.stringify(s));
+  alert('✅ Settings saved');
+}
+window.onload = ()=>{ const s=JSON.parse(localStorage.getItem('adminSettings')||'{}'); if(!s) return; if(s.fixed2) document.getElementById('fixed2').value=s.fixed2; if(s.fixed3) document.getElementById('fixed3').value=s.fixed3; if(s.start) document.getElementById('startTime').value=s.start; if(s.stop) document.getElementById('stopTime').value=s.stop; if(s.speedMs) document.getElementById('speedMs').value=s.speedMs; if(s.theme) document.getElementById('themeSel').value=s.theme; if(s.historyMax) document.getElementById('historyMax').value=s.historyMax; };
+</script>
