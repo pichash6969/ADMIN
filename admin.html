@@ -3,32 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lottery Scroll Display</title>
+<title>Admin Panel - Lottery Control</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="main-container">
-    <!-- Clock placed above the title -->
-    <div id="clock" class="clock"></div>
+<div class="admin-container">
+  <h1>Admin Panel - Control Lottery</h1>
 
-    <h1>🎰 Lottery Scroll Display 🎰</h1>
+  <div class="control-group">
+    <label>Fixed 2D Number:</label>
+    <input type="number" id="fixed2D" min="0" max="99" value="00">
+  </div>
 
-    <!-- Numbers Display -->
-    <div class="numbers-display">
-        <!-- 2D Numbers -->
-        <div class="number-section glow">
-            <div class="section-title">2D Numbers (00-99)</div>
-            <div class="scroll-container" id="scroll-2digit"></div>
-        </div>
+  <div class="control-group">
+    <label>Fixed 3D Number:</label>
+    <input type="number" id="fixed3D" min="0" max="999" value="000">
+  </div>
 
-        <!-- 3D Numbers -->
-        <div class="number-section glow">
-            <div class="section-title">3D Numbers (000-999)</div>
-            <div class="scroll-container" id="scroll-3digit"></div>
-        </div>
-    </div>
+  <div class="control-group">
+    <label>Start Time (HH:MM:SS):</label>
+    <input type="time" id="startTime">
+  </div>
+
+  <div class="control-group">
+    <label>Stop Time (HH:MM:SS):</label>
+    <input type="time" id="stopTime">
+  </div>
+
+  <div class="control-group">
+    <label>Scroll Speed:</label>
+    <input type="range" id="speedSlider" min="5" max="50" value="20">
+  </div>
+
+  <div class="buttons">
+    <button class="control-btn" id="applyBtn">💾 Apply Settings</button>
+    <button class="control-btn" id="playBtn">▶️ Play</button>
+    <button class="control-btn" id="pauseBtn">⏸️ Pause</button>
+    <button class="control-btn" id="resetBtn">🔄 Reset</button>
+    <button class="control-btn" id="randomBtn">🎲 Random Stop</button>
+  </div>
 </div>
 
-<script src="script.js"></script>
+<script src="admin.js"></script>
 </body>
 </html>
