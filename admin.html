@@ -3,138 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel - Lottery Control</title>
-<style>
-  body { font-family: Arial,sans-serif; background:#111; color:#0f0; display:flex; flex-direction:column; align-items:center; padding:30px;}
-  h1 { margin-bottom:20px; }
-  .clock { font-size:24px; margin-bottom:20px; }
-  .input-group { margin:10px 0; display:flex; flex-direction:column; align-items:center; }
-  .input-group label { margin-bottom:5px; }
-  .input-group input, .input-group input[type="range"] { padding:8px; width:150px; border-radius:5px; border:none; text-align:center; }
-  .status-text { margin-top:20px; font-size:16px; }
-  .control-btn { margin-top:10px; padding:8px 16px; border:none; border-radius:5px; cursor:pointer; background:#0f0; color:#000; font-weight:bold; }
-  .control-btn:hover{ background:#0c0; }
-</style>
+<title>Admin Panel</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="admin-container">
+  <h1>Admin Panel</h1>
 
-<h1>Admin Panel - Lottery Control</h1>
+  <div class="input-group">
+    <label>Fixed 2D Number (00-99)</label>
+    <input type="number" min="0" max="99" id="fixed2D">
+  </div>
 
-<div class="clock" id="realTimeClock">00:00:00</div>
+  <div class="input-group">
+    <label>Fixed 3D Number (000-999)</label>
+    <input type="number" min="0" max="999" id="fixed3D">
+  </div>
 
-<div class="input-group">
-  <label for="startTime">Start Time (HH:MM:SS)</label>
-  <input type="time" id="startTime" step="1">
+  <div class="input-group">
+    <label>Start Time (HH:MM:SS)</label>
+    <input type="time" id="startTime" step="1">
+  </div>
+
+  <div class="input-group">
+    <label>Stop Time (HH:MM:SS)</label>
+    <input type="time" id="stopTime" step="1">
+  </div>
+
+  <div class="slider-container">
+    <label>Scroll Speed</label>
+    <input type="range" min="5" max="50" value="20" id="speedSlider">
+  </div>
 </div>
 
-<div class="input-group">
-  <label for="stopTime">Stop Time (HH:MM:SS)</label>
-  <input type="time" id="stopTime" step="1">
-</div>
-
-<div class="input-group">
-  <label for="fixed2D">Fixed 2D Number (00-99)</label>
-  <input type="number" id="fixed2D" min="0" max="99" placeholder="Ex: 25">
-</div>
-
-<div class="input-group">
-  <label for="fixed3D">Fixed 3D Number (000-999)</label>
-  <input type="number" id="fixed3D" min="0" max="999" placeholder="Ex: 123">
-</div>
-
-<div class="input-group">
-  <label for="speedControl">Scroll Speed (seconds)</label>
-  <input type="range" min="5" max="50" value="20" id="speedControl">
-  <span id="speedValue">20s</span>
-</div>
-
-<button class="control-btn" id="pauseResumeBtn">⏸️ Pause</button>
-
-<div class="status-text" id="statusText">Status: Waiting...</div>
-
-<script>
-  // Real-time clock
-  function updateClock(){
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2,'0');
-    const m = String(now.getMinutes()).padStart(2,'0');
-    const s = String(now.getSeconds()).padStart(2,'0');
-    document.getElementById('realTimeClock').textContent = `${h}:${m}:${s}`;
-    checkStartStop(h,m,s);
-  }
-  setInterval(updateClock,1000);
-
-  // Start/Stop logic
-  function checkStartStop(h,m,s){
-    const start = document.getElementById('startTime').value;
-    const stop = document.getElementById('stopTime').value;
-    const current = `${h}:${m}:${s}`;
-    const status = document.getElementById('statusText');
-
-    if(start && stop){
-      if(current === start){
-        startScrolling();
-        status.textContent = `Status: Started at ${start}`;
-      } else if(current === stop){
-        stopScrolling();
-        showFixedNumbers();
-        status.textContent = `Status: Stopped at ${stop}`;
-      }
-    }
-  }
-
-  // Scroll control
-  let currentSpeed2Digit = 20;
-  let currentSpeed3Digit = 30;
-  let isPaused = false;
-
-  function startScrolling(){
-    const scroll2 = document.getElementById('scroll-2digit');
-    const scroll3 = document.getElementById('scroll-3digit');
-    scroll2.style.animationPlayState='running';
-    scroll3.style.animationPlayState='running';
-    isPaused = false;
-    document.getElementById('pauseResumeBtn').textContent='⏸️ Pause';
-  }
-
-  function stopScrolling(){
-    document.getElementById('scroll-2digit').style.animationPlayState='paused';
-    document.getElementById('scroll-3digit').style.animationPlayState='paused';
-  }
-
-  function showFixedNumbers(){
-    const num2D = String(document.getElementById('fixed2D').value).padStart(2,'0');
-    const num3D = String(document.getElementById('fixed3D').value).padStart(3,'0');
-    document.getElementById('scroll-2digit').style.transform = `translateY(-${num2D*80}px)`;
-    document.getElementById('scroll-3digit').style.transform = `translateY(-${num3D*80}px)`;
-  }
-
-  function updateSpeed(){
-    const val = document.getElementById('speedControl').value;
-    document.getElementById('speedValue').textContent = `${val}s`;
-    currentSpeed2Digit = parseInt(val);
-    currentSpeed3Digit = parseInt(val)*1.5;
-
-    const scroll2 = document.getElementById('scroll-2digit');
-    const scroll3 = document.getElementById('scroll-3digit');
-
-    scroll2.style.animationDuration = `${currentSpeed2Digit}s`;
-    scroll3.style.animationDuration = `${currentSpeed3Digit}s`;
-  }
-
-  function togglePauseResume(){
-    if(isPaused){
-      startScrolling();
-    } else {
-      document.getElementById('scroll-2digit').style.animationPlayState='paused';
-      document.getElementById('scroll-3digit').style.animationPlayState='paused';
-      isPaused = true;
-      document.getElementById('pauseResumeBtn').textContent='▶️ Resume';
-    }
-  }
-
-  document.getElementById('speedControl').addEventListener('input', updateSpeed);
-  document.getElementById('pauseResumeBtn').addEventListener('click', togglePauseResume);
-</script>
+<script src="admin.js"></script>
 </body>
 </html>
